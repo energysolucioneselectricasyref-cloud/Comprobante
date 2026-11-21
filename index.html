@@ -153,9 +153,8 @@
     border-radius: 4px;
     cursor: pointer;
   }
-  /* Panel de formulario rápido */
   #panel-edicion {
-    display: none;
+    display: block;
     background: #eef3f8;
     border: 1px solid #b8cce4;
     padding: 15px;
@@ -169,7 +168,7 @@
   }
   .form-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 8px;
   }
   .form-group label {
@@ -186,6 +185,12 @@
     border-radius: 4px;
     font-size: 12px;
   }
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
   .btn-apply {
     background-color: #28a745;
     color: #fff;
@@ -194,7 +199,15 @@
     font-weight: bold;
     border-radius: 4px;
     cursor: pointer;
-    margin-top: 10px;
+  }
+  .btn-demo {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+    padding: 9px 15px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
   }
   @media print {
     body { background: #fff; padding: 0; }
@@ -208,11 +221,11 @@
 
 <div class="page">
   <div class="toolbar no-print">
-    <button type="button" class="btn-edit" onclick="toggleFormulario()">Llenar / Editar Datos</button>
+    <button type="button" class="btn-edit" onclick="toggleFormulario()">Mostrar / Ocultar Formulario</button>
     <button type="button" class="btn-print" onclick="window.print()">Imprimir / Guardar PDF</button>
   </div>
 
-  <!-- FORMULARIO MANUAL (Se oculta al imprimir) -->
+  <!-- FORMULARIO MANUAL -->
   <div id="panel-edicion" class="no-print">
     <h3>Llenar datos del comprobante</h3>
     <div class="form-grid">
@@ -228,15 +241,18 @@
       <div class="form-group"><label>Salario Básico ($):</label><input type="number" id="in_basico" placeholder="Ej: 650000"></div>
       <div class="form-group"><label>Horas Extras ($):</label><input type="number" id="in_extras" placeholder="Ej: 85000"></div>
       <div class="form-group"><label>Aux. Transporte ($):</label><input type="number" id="in_transporte" placeholder="Ej: 81000"></div>
-      <div class="form-group"><label>Aporte Salud 4% ($):</label><input type="number" id="in_salud" placeholder="Dejar vacío = auto 4%"></div>
-      <div class="form-group"><label>Aporte Pensión 4% ($):</label><input type="number" id="in_pension" placeholder="Dejar vacío = auto 4%"></div>
+      <div class="form-group"><label>Aporte Salud 4% ($):</label><input type="number" id="in_salud" placeholder="Vacío = auto 4%"></div>
+      <div class="form-group"><label>Aporte Pensión 4% ($):</label><input type="number" id="in_pension" placeholder="Vacío = auto 4%"></div>
       <div class="form-group"><label>Otras Deducciones ($):</label><input type="number" id="in_otras" placeholder="Ej: 0"></div>
     </div>
     <div class="form-group" style="margin-top:8px;">
       <label>Detalle Horas (1 línea por turno: Fecha, Entrada, Salida, Horas, Valor):</label>
       <textarea id="in_horas" rows="2" placeholder="21/11/2026, 08:00, 17:00, 8, 55000"></textarea>
     </div>
-    <button type="button" class="btn-apply" onclick="aplicarFormulario()">Aplicar al Comprobante</button>
+    <div class="form-actions">
+      <button type="button" class="btn-apply" onclick="aplicarFormulario()">Aplicar al Comprobante</button>
+      <button type="button" class="btn-demo" onclick="cargarEjemplo()">Llenar con Ejemplo</button>
+    </div>
   </div>
 
   <!-- ENCABEZADO -->
@@ -311,12 +327,3 @@
       <th class="orange-header text-right" style="width: 18%;">VALOR</th>
     </tr>
     <tr>
-      <td>Salario Básico / Horas Ordinarias</td>
-      <td class="text-right" id="basico">$0.00</td>
-      <td>Aporte Salud (4%)</td>
-      <td class="text-right" id="salud">$0.00</td>
-    </tr>
-    <tr>
-      <td>Horas Extras y Recargos</td>
-      <td class="text-right" id="extras">$0.00</td>
-      <td>Aporte Pensión (4%)</td>
