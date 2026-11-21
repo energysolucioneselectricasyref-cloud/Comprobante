@@ -98,12 +98,33 @@
     font-weight: bold;
     text-align: center;
   }
-  .signature-box {
-    margin-top: 50px;
-    width: 260px;
+  .signature-wrapper {
+    margin-top: 25px;
+    width: 280px;
+  }
+  #firma-pad {
+    border: 1px dashed #bbb;
+    background-color: #fafafa;
+    border-radius: 4px;
+    touch-action: none;
+    cursor: crosshair;
+    display: block;
+  }
+  .signature-line {
     border-top: 1px solid #333;
     padding-top: 5px;
     font-size: 11px;
+    margin-top: 2px;
+  }
+  .btn-clear {
+    background-color: #666;
+    color: #fff;
+    border: none;
+    padding: 4px 10px;
+    font-size: 11px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top: 5px;
   }
   .no-print {
     text-align: right;
@@ -122,7 +143,8 @@
   @media print {
     body { background: #fff; padding: 0; }
     .page { box-shadow: none; padding: 0; max-width: 100%; }
-    .no-print { display: none; }
+    .no-print { display: none !important; }
+    #firma-pad { border: none; background: transparent; }
   }
 </style>
 </head>
@@ -251,22 +273,32 @@
       </tr>
     </thead>
     <tbody id="tabla_horas">
-      <!-- Se llena automáticamente desde la URL -->
     </tbody>
   </table>
 
-  <!-- FIRMA -->
-  <div class="signature-box">
-    <strong>Firma del Empleado / Recibido a satisfacción</strong><br>
-    C.C. <span id="cedula_firma"></span>
+  <!-- FIRMA DIGITAL -->
+  <div class="signature-wrapper">
+    <span class="no-print" style="font-size: 10px; color: #666;">Firme aquí con el dedo o mouse:</span>
+    <canvas id="firma-pad" width="280" height="90"></canvas>
+    <div class="signature-line">
+      <strong>Firma del Empleado / Recibido a satisfacción</strong><br>
+      C.C. <span id="cedula_firma"></span>
+    </div>
+    <button type="button" class="btn-clear no-print" onclick="limpiarFirma()">Limpiar firma</button>
   </div>
 </div>
 
 <script>
   const params = new URLSearchParams(window.location.search);
 
+  function limpiarNumero(valor) {
+    if (!valor) return 0;
+    const limpio = String(valor).replace(/[^0-9.-]/g, "");
+    return parseFloat(limpio) || 0;
+  }
+
   function formatoMoneda(valor) {
-    const num = parseFloat(valor) || 0;
+    const num = limpiarNumero(valor);
     return "$" + num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
@@ -282,13 +314,13 @@
   document.getElementById("cuenta").textContent = params.get("cuenta") || "";
   document.getElementById("eps").textContent = params.get("eps") || "";
 
-  const basico = parseFloat(params.get("basico")) || 0;
-  const extras = parseFloat(params.get("extras")) || 0;
-  const transporte = parseFloat(params.get("transporte")) || 0;
-  const salud = parseFloat(params.get("salud")) || 0;
-  const pension = parseFloat(params.get("pension")) || 0;
-  const otrasDed = parseFloat(params.get("otras")) || 0;
-  const neto = parseFloat(params.get("neto")) || 0;
+  const basico = limpiarNumero(params.get("basico"));
+  const extras = limpiarNumero(params.get("extras"));
+  const transporte = limpiarNumero(params.get("transporte"));
+  const salud = limpiarNumero(params.get("salud"));
+  const pension = limpiarNumero(params.get("pension"));
+  const otrasDed = limpiarNumero(params.get("otras"));
+  const neto = limpiarNumero(params.get("neto"));
 
   document.getElementById("basico").textContent = formatoMoneda(basico);
   document.getElementById("extras").textContent = formatoMoneda(extras);
@@ -298,29 +330,3 @@
   document.getElementById("salud").textContent = formatoMoneda(salud);
   document.getElementById("pension").textContent = formatoMoneda(pension);
   document.getElementById("otras_ded").textContent = formatoMoneda(otrasDed);
-  document.getElementById("total_deducciones").textContent = formatoMoneda(salud + pension + otrasDed);
-  document.getElementById("neto").textContent = formatoMoneda(neto);
-
-  const horasRaw = params.get("horas") || "";
-  const tbody = document.getElementById("tabla_horas");
-  if (horasRaw) {
-    const filas = horasRaw.split(";;");
-    filas.forEach(fila => {
-      const cols = fila.split("|");
-      if (cols.length >= 5) {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td class="text-center">${cols[0]}</td>
-          <td class="text-center">${cols[1]}</td>
-          <td class="text-center">${cols[2]}</td>
-          <td class="text-center">${cols[3]}</td>
-          <td class="text-right">${formatoMoneda(cols[4])}</td>
-        `;
-        tbody.appendChild(tr);
-      }
-    });
-  }
-</script>
-
-</body>
-</html>
