@@ -371,10 +371,15 @@
       queryString = fullUrl.substring(fullUrl.indexOf("#") + 1);
     }
 
-    var params = new URLSearchParams(queryString);
+    if (!queryString) {
+      var aviso = document.createElement("div");
+      aviso.style.cssText = "background:#fff3cd;color:#856404;padding:10px;margin:0 auto 12px auto;max-width:800px;border:1px solid #ffeeba;border-radius:4px;font-family:sans-serif;font-size:12px;text-align:center;";
+      aviso.textContent = "Vista previa sin datos: abre este comprobante desde el botón 'Imprimir comprobante' en AppSheet.";
+      document.body.insertBefore(aviso, document.body.firstChild);
+    } else {
+      var params = new URLSearchParams(queryString);
 
-    var idNomina = "-";
-    if (queryString.length > 0) {
+      var idNomina = "-";
       var ampIndex = queryString.indexOf("&");
       var firstSegment = ampIndex !== -1 ? queryString.substring(0, ampIndex) : queryString;
       if (firstSegment && firstSegment.indexOf("=") === -1) {
@@ -384,4 +389,115 @@
           idNomina = firstSegment;
         }
       }
+
+      setTexto("id_nomina", idNomina);
+      setTexto("fecha", params.get("fecha"));
+      setTexto("nombre", params.get("nombre"));
+      setTexto("cc", params.get("cc"));
+      setTexto("cargo", params.get("cargo"));
+      setTexto("contrato", params.get("contrato"));
+      setTexto("periodo", params.get("periodo"));
+      setTexto("cuenta", params.get("cuenta"));
+      setTexto("eps", params.get("eps"));
+
+      setTexto("firma_nombre", params.get("nombre"));
+      setTexto("firma_cc", params.get("cc"));
+
+      setTexto("basico", formatCOP(params.get("basico")));
+      setTexto("extras", formatCOP(params.get("extras")));
+      setTexto("transporte", formatCOP(params.get("transporte")));
+      setTexto("salud", "- " + formatCOP(params.get("salud")));
+      setTexto("pension", "- " + formatCOP(params.get("pension")));
+      setTexto("otras", "- " + formatCOP(params.get("otras")));
+      setTexto("neto", formatCOP(params.get("neto")));
+
+      var hf = params.get("hf");
+      var tablaHoras = document.getElementById("tabla-horas");
+      var tbody = document.getElementById("horas-body");
+
+      if (hf && hf.trim() !== "") {
+        var fechas = hf.split(";;");
+        var entradas = (params.get("he") || "").split(";;");
+        var salidas = (params.get("hs") || "").split(";;");
+        var horas = (params.get("ht") || "").split(";;");
+        var valores = (params.get("hv") || "").split(";;");
+
+        fechas.forEach(function(fechaItem, idx) {
+          var tr = document.createElement("tr");
+
+          var tdFecha = document.createElement("td");
+          tdFecha.textContent = fechaItem || "-";
+
+          var tdEntrada = document.createElement("td");
+          tdEntrada.className = "text-center";
+          tdEntrada.textContent = entradas.at(idx) || "-";
+
+          var tdSalida = document.createElement("td");
+          tdSalida.className = "text-center";
+          tdSalida.textContent = salidas.at(idx) || "-";
+
+          var tdHoras = document.createElement("td");
+          tdHoras.className = "text-right";
+          tdHoras.textContent = horas.at(idx) || "0";
+
+          var tdValor = document.createElement("td");
+          tdValor.className = "text-right";
+          tdValor.textContent = formatCOP(valores.at(idx));
+
+          tr.appendChild(tdFecha);
+          tr.appendChild(tdEntrada);
+          tr.appendChild(tdSalida);
+          tr.appendChild(tdHoras);
+          tr.appendChild(tdValor);
+
+          tbody.appendChild(tr);
+        });
+      } else if (tablaHoras) {
+        tablaHoras.style.display = "none";
+      }
     }
+
+    // Firma táctil compatible con Pointer Events (funciona en celular y PC sin errores)
+    var canvas = document.getElementById("canvas-firma");
+    var btnLimpiar = document.getElementById("btn-limpiar-firma");
+    if (canvas) {
+      var ctx = canvas.getContext("2d");
+      ctx.strokeStyle = "#111111";
+      ctx.lineWidth = 2;
+      ctx.lineCap = "round";
+      var dibujando = false;
+
+      function obtenerPos(e) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: (e.clientX - rect.left) * (canvas.width / rect.width),
+          y: (e.clientY - rect.top) * (canvas.height / rect.height)
+        };
+      }
+
+      canvas.addEventListener("pointerdown", function(e) {
+        dibujando = true;
+        var pos = obtenerPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      });
+
+      canvas.addEventListener("pointermove", function(e) {
+        if (!dibujando) return;
+        var pos = obtenerPos(e);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+      });
+
+      window.addEventListener("pointerup", function() {
+        dibujando = false;
+      });
+
+      if (btnLimpiar) {
+        btnLimpiar.addEventListener("click", function() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+      }
+    }
+  })();
+</script>
