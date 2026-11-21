@@ -296,14 +296,13 @@
     function limpiarNumero(valor) {
       if (!valor) return 0;
       let str = String(valor).trim();
-      // Si tiene formato como $100,000.00
       if (str.includes(",") && str.includes(".")) {
         str = str.replace(/,/g, "");
       } else if ((str.match(/\./g) || []).length > 1) {
         str = str.replace(/\./g, "");
       } else if ((str.match(/,/g) || []).length > 1) {
         str = str.replace(/,/g, "");
-      } else if (str.includes(",") && str.split(",")[1].length === 3) {
+      } else if (str.includes(",") && str.split(",").length === 3) {
         str = str.replace(",", "");
       }
       const limpio = str.replace(/[^0-9.-]/g, "");
@@ -318,8 +317,8 @@
       });
     }
 
-    // 1. Detectar el N° de Nómina (ya sea ?537602-N-001&... o ?id=537602-N-001)
-    let idNomina = params.get("id") || params.get("boleta") || "";
+    // 1. Obtener N° de Nómina (?537602-N-001&... o ?id=537602-N-001)
+    let idNomina = params.get("id") || "";
     if (!idNomina && search.startsWith("?")) {
       const primerSegmento = search.substring(1).split("&")[0];
       if (primerSegmento && !primerSegmento.includes("=")) {
@@ -327,8 +326,8 @@
       }
     }
 
-    // 2. Rellenar datos del comprobante y trabajador
-    const cedulaVal = params.get("cc") || params.get("cedula") || "";
+    // 2. Rellenar datos generales y del trabajador
+    const cedulaVal = params.get("cc") || "";
     const fechaVal = params.get("fecha") || "";
 
     const campos = {
@@ -350,4 +349,6 @@
       if (el) el.textContent = valor;
     }
 
-    // 3. Calcular valores de liquidación
+    // 3. Calcular y rellenar resumen de liquidación
+    const basico = limpiarNumero(params.get("basico"));
+    const extras = limpiarNumero(params.get("extras"));
