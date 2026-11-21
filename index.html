@@ -290,17 +290,21 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    const params = new URLSearchParams(window.location.search);
+    const search = window.location.search;
+    const params = new URLSearchParams(search);
 
     function limpiarNumero(valor) {
       if (!valor) return 0;
       let str = String(valor).trim();
-      if (str.includes(".") && str.includes(",")) {
-        str = str.replace(/\./g, "").replace(",", ".");
+      // Si tiene formato como $100,000.00
+      if (str.includes(",") && str.includes(".")) {
+        str = str.replace(/,/g, "");
       } else if ((str.match(/\./g) || []).length > 1) {
         str = str.replace(/\./g, "");
       } else if ((str.match(/,/g) || []).length > 1) {
         str = str.replace(/,/g, "");
+      } else if (str.includes(",") && str.split(",")[1].length === 3) {
+        str = str.replace(",", "");
       }
       const limpio = str.replace(/[^0-9.-]/g, "");
       return parseFloat(limpio) || 0;
@@ -314,14 +318,26 @@
       });
     }
 
-    // 1. Llenar datos automáticamente desde la URL
+    // 1. Detectar el N° de Nómina (ya sea ?537602-N-001&... o ?id=537602-N-001)
+    let idNomina = params.get("id") || params.get("boleta") || "";
+    if (!idNomina && search.startsWith("?")) {
+      const primerSegmento = search.substring(1).split("&")[0];
+      if (primerSegmento && !primerSegmento.includes("=")) {
+        idNomina = decodeURIComponent(primerSegmento);
+      }
+    }
+
+    // 2. Rellenar datos del comprobante y trabajador
+    const cedulaVal = params.get("cc") || params.get("cedula") || "";
+    const fechaVal = params.get("fecha") || "";
+
     const campos = {
-      id_nomina: params.get("id") || "",
-      fecha_emision: params.get("fecha") || "",
-      fecha_emision_2: params.get("fecha") || "",
+      id_nomina: idNomina,
+      fecha_emision: fechaVal,
+      fecha_emision_2: fechaVal,
       nombre: params.get("nombre") || "",
-      cedula: params.get("cedula") || "",
-      cedula_firma: params.get("cedula") || "",
+      cedula: cedulaVal,
+      cedula_firma: cedulaVal,
       cargo: params.get("cargo") || "",
       contrato: params.get("contrato") || "",
       periodo: params.get("periodo") || "",
@@ -334,20 +350,4 @@
       if (el) el.textContent = valor;
     }
 
-    // 2. Calcular valores automáticamente
-    const basico = limpiarNumero(params.get("basico"));
-    const extras = limpiarNumero(params.get("extras"));
-    const transporte = limpiarNumero(params.get("transporte"));
-    const baseCotizacion = basico + extras;
-
-    const salud = params.has("salud")
-      ? limpiarNumero(params.get("salud"))
-      : Math.round(baseCotizacion * 0.04);
-
-    const pension = params.has("pension")
-      ? limpiarNumero(params.get("pension"))
-      : Math.round(baseCotizacion * 0.04);
-
-    const otrasDed = limpiarNumero(params.get("otras_ded"));
-
-    const totalDevengado = basico + extras + transporte;
+    // 3. Calcular valores de liquidación
