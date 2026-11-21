@@ -137,8 +137,7 @@
   <table class="header-table">
     <tr>
       <td style="width: 18%;">
-        <!-- Cambia logo.png por el nombre de tu imagen subida en el mismo repositorio -->
-        <img src="logo.png" alt="Logo" style="max-height: 60px;" onerror="this.style.display='none'">
+        <img src="Logo.jpg" alt="Logo" style="max-height: 60px;" onerror="this.style.display='none'">
       </td>
       <td style="width: 57%;">
         <p class="title">COMPROBANTE DE PAGO<br>DE NÓMINA</p>
@@ -302,7 +301,6 @@
   document.getElementById("total_deducciones").textContent = formatoMoneda(salud + pension + otrasDed);
   document.getElementById("neto").textContent = formatoMoneda(neto);
 
-  // Construir filas de horas trabajadas (formato: fecha|entrada|salida|horas|valor;;fecha|entrada...)
   const horasRaw = params.get("horas") || "";
   const tbody = document.getElementById("tabla_horas");
   if (horasRaw) {
@@ -316,3 +314,13 @@
           <td class="text-center">${cols[1]}</td>
           <td class="text-center">${cols[2]}</td>
           <td class="text-center">${cols[3]}</td>
+          <td class="text-right">${formatoMoneda(cols[4])}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
