@@ -1,355 +1,204 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Comprobante de Pago de Nómina</title>
-<style>
-  body {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 12px;
-    color: #333;
-    margin: 0;
-    padding: 20px;
-    background-color: #f5f5f5;
-  }
-  .page {
-    max-width: 800px;
-    margin: 0 auto;
-    background: #fff;
-    padding: 25px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
-  .header-table {
-    width: 100%;
-    border-bottom: 2px solid #d9531e;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-  }
-  .title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #222;
-    margin: 0;
-  }
-  .subtitle {
-    font-size: 12px;
-    font-weight: bold;
-    color: #d9531e;
-    margin: 3px 0;
-  }
-  .section-title {
-    color: #d9531e;
-    font-weight: bold;
-    font-size: 11px;
-    margin-top: 14px;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-  }
-  table.data-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 10px;
-  }
-  table.data-table td, table.data-table th {
-    border: 1px solid #ccc;
-    padding: 6px 8px;
-  }
-  .label-cell {
-    background-color: #f9f5f2;
-    font-weight: bold;
-    width: 22%;
-  }
-  .val-cell {
-    width: 28%;
-  }
-  .orange-header {
-    background-color: #d9531e;
-    color: #ffffff;
-    font-weight: bold;
-    text-align: left;
-  }
-  .text-right {
-    text-align: right;
-  }
-  .text-center {
-    text-align: center;
-  }
-  .total-row {
-    background-color: #f4f4f4;
-    font-weight: bold;
-  }
-  .neto-box {
-    width: 100%;
-    border: 1px solid #d9531e;
-    background-color: #fff6f2;
-    margin: 12px 0;
-    border-collapse: collapse;
-  }
-  .neto-box td {
-    padding: 9px 10px;
-    font-weight: bold;
-    font-size: 14px;
-    color: #d9531e;
-  }
-  .dark-header {
-    background-color: #4a4a4a;
-    color: #ffffff;
-    font-weight: bold;
-    text-align: center;
-  }
-  .signature-wrapper {
-    margin-top: 25px;
-    width: 280px;
-  }
-  #firma-pad {
-    border: 1px dashed #bbb;
-    background-color: #fafafa;
-    border-radius: 4px;
-    touch-action: none;
-    cursor: crosshair;
-    display: block;
-  }
-  .signature-line {
-    border-top: 1px solid #333;
-    padding-top: 5px;
-    font-size: 11px;
-    margin-top: 2px;
-  }
-  .btn-clear {
-    background-color: #666;
-    color: #fff;
-    border: none;
-    padding: 5px 10px;
-    font-size: 11px;
-    border-radius: 3px;
-    cursor: pointer;
-    margin-top: 5px;
-  }
-  .no-print {
-    text-align: right;
-    margin-bottom: 15px;
-  }
-  .btn-print {
-    background-color: #d9531e;
-    color: #fff;
-    border: none;
-    padding: 10px 18px;
-    font-size: 13px;
-    font-weight: bold;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  @media print {
-    body { background: #fff; padding: 0; }
-    .page { box-shadow: none; padding: 0; max-width: 100%; }
-    .no-print { display: none !important; }
-    #firma-pad { border: none; background: transparent; }
-  }
-</style>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: #333333;
+      margin: 0;
+      padding: 25px;
+      font-size: 13px;
+    }
+    .container {
+      max-width: 750px;
+      margin: auto;
+      border: 1px solid #cccccc;
+      padding: 25px;
+    }
+    .header {
+      border-bottom: 2px solid #0056b3;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .company-info {
+      float: left;
+    }
+    .company-info h1 {
+      margin: 0 0 5px 0;
+      font-size: 20px;
+      color: #0056b3;
+    }
+    .doc-info {
+      float: right;
+      text-align: right;
+    }
+    .doc-info h2 {
+      margin: 0 0 5px 0;
+      font-size: 16px;
+      color: #222222;
+    }
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      background-color: #f9f9f9;
+    }
+    .info-table td {
+      padding: 8px 12px;
+      border: 1px solid #e0e0e0;
+    }
+    .details-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    .details-table th {
+      background-color: #0056b3;
+      color: #ffffff;
+      text-align: left;
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+    .details-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #dddddd;
+    }
+    .text-right {
+      text-align: right;
+    }
+    .section-title {
+      background-color: #eef3f8;
+      font-weight: bold;
+      color: #0056b3;
+    }
+    .total-row td {
+      font-weight: bold;
+      font-size: 15px;
+      background-color: #e6f0fa;
+      border-top: 2px solid #0056b3;
+      border-bottom: 2px solid #0056b3;
+      color: #000000;
+    }
+    .signatures {
+      width: 100%;
+      margin-top: 60px;
+      border-collapse: collapse;
+    }
+    .signatures td {
+      width: 50%;
+      text-align: center;
+      padding: 0 20px;
+    }
+    .sig-line {
+      border-top: 1px solid #333333;
+      padding-top: 6px;
+      font-weight: bold;
+    }
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 11px;
+      color: #777777;
+    }
+  </style>
 </head>
 <body>
 
-<div class="page">
-  <div class="no-print">
-    <button type="button" class="btn-print" onclick="window.print()">Imprimir / Guardar PDF</button>
+<div class="container">
+  <!-- Encabezado -->
+  <div class="header">
+    <div class="company-info">
+      <h1>Energy Cotiza y Factura</h1>
+      <div>NIT: 000.000.000-0</div>
+      <div>Comprobante de Pago de Nómina</div>
+    </div>
+    <div class="doc-info">
+      <h2>COMPROBANTE N.º <<[ID_Nomina]>></h2>
+      <div><strong>Fecha de emisión:</strong> <<TODAY()>></div>
+    </div>
   </div>
 
-  <!-- ENCABEZADO -->
-  <table class="header-table">
+  <!-- Datos del Empleado y Periodo -->
+  <table class="info-table">
     <tr>
-      <td style="width: 18%;">
-        <img src="Logo.jpg" alt="Logo" style="max-height: 60px;" onerror="this.style.display='none'">
-      </td>
-      <td style="width: 57%;">
-        <p class="title">COMPROBANTE DE PAGO<br>DE NÓMINA</p>
-        <p class="subtitle">ENERGY SOLUCIONES ELÉCTRICAS Y REFRIGERACIÓN</p>
-        <span>Tierralta, Córdoba</span>
-      </td>
-      <td style="width: 25%; text-align: right; vertical-align: top;">
-        <strong>N° <span id="id_nomina"></span></strong><br>
-        <span>Fecha: <span id="fecha_emision"></span></span>
-      </td>
+      <td style="width: 50%;"><strong>Empleado:</strong> <<[ID_Empleado].[Nombre]>></td>
+      <td style="width: 50%;"><strong>ID / Documento:</strong> <<[ID_Empleado]>></td>
+    </tr>
+    <tr>
+      <td><strong>Periodo Inicio:</strong> <<[Periodo_Inicio]>></td>
+      <td><strong>Periodo Fin:</strong> <<[Periodo_Fin]>></td>
     </tr>
   </table>
 
-  <!-- 1. DATOS DEL EMPLEADOR -->
-  <div class="section-title">1. DATOS DEL EMPLEADOR</div>
-  <table class="data-table">
-    <tr>
-      <td class="label-cell">Empresa / Razón Social:</td>
-      <td class="val-cell">ENERGY SOLUCIONES ELÉCTRICAS Y REFRIGERACIÓN</td>
-      <td class="label-cell">NIT:</td>
-      <td class="val-cell">1073977725-0</td>
-    </tr>
-    <tr>
-      <td class="label-cell">Ciudad:</td>
-      <td class="val-cell">Tierralta, Córdoba</td>
-      <td class="label-cell">Fecha de Emisión:</td>
-      <td class="val-cell" id="fecha_emision_2"></td>
-    </tr>
-  </table>
-
-  <!-- 2. DATOS DEL TRABAJADOR -->
-  <div class="section-title">2. DATOS DEL TRABAJADOR Y PERIODO LIQUIDADO</div>
-  <table class="data-table">
-    <tr>
-      <td class="label-cell">Nombre:</td>
-      <td class="val-cell" id="nombre"></td>
-      <td class="label-cell">C.C.:</td>
-      <td class="val-cell" id="cedula"></td>
-    </tr>
-    <tr>
-      <td class="label-cell">Cargo:</td>
-      <td class="val-cell" id="cargo"></td>
-      <td class="label-cell">Tipo de Contrato:</td>
-      <td class="val-cell" id="contrato"></td>
-    </tr>
-    <tr>
-      <td class="label-cell">Periodo Liquidado:</td>
-      <td class="val-cell" id="periodo"></td>
-      <td class="label-cell">Cuenta Bancaria:</td>
-      <td class="val-cell" id="cuenta"></td>
-    </tr>
-    <tr>
-      <td class="label-cell">EPS y Fondo Pensión:</td>
-      <td colspan="3" id="eps"></td>
-    </tr>
-  </table>
-
-  <!-- 3. RESUMEN DE LIQUIDACIÓN -->
-  <div class="section-title">3. RESUMEN DE LIQUIDACIÓN</div>
-  <table class="data-table">
-    <tr>
-      <th class="orange-header" style="width: 32%;">CONCEPTOS DEVENGADOS (Ingresos)</th>
-      <th class="orange-header text-right" style="width: 18%;">VALOR</th>
-      <th class="orange-header" style="width: 32%;">DEDUCCIONES (Descuentos)</th>
-      <th class="orange-header text-right" style="width: 18%;">VALOR</th>
-    </tr>
-    <tr>
-      <td>Salario Básico / Horas Ordinarias</td>
-      <td class="text-right" id="basico">$0.00</td>
-      <td>Aporte Salud (4%)</td>
-      <td class="text-right" id="salud">$0.00</td>
-    </tr>
-    <tr>
-      <td>Horas Extras y Recargos</td>
-      <td class="text-right" id="extras">$0.00</td>
-      <td>Aporte Pensión (4%)</td>
-      <td class="text-right" id="pension">$0.00</td>
-    </tr>
-    <tr>
-      <td>Auxilio de Transporte</td>
-      <td class="text-right" id="transporte">$0.00</td>
-      <td>Otras Deducciones</td>
-      <td class="text-right" id="otras_ded">$0.00</td>
-    </tr>
-    <tr class="total-row">
-      <td>TOTAL DEVENGADO</td>
-      <td class="text-right" id="total_devengado">$0.00</td>
-      <td>TOTAL DEDUCCIONES</td>
-      <td class="text-right" id="total_deducciones">$0.00</td>
-    </tr>
-  </table>
-
-  <!-- NETO A PAGAR -->
-  <table class="neto-box">
-    <tr>
-      <td>NETO A PAGAR AL TRABAJADOR:</td>
-      <td class="text-right" id="neto">$0.00</td>
-    </tr>
-  </table>
-
-  <!-- 4. DETALLE DE HORAS TRABAJADAS -->
-  <div class="section-title">4. DETALLE DE HORAS TRABAJADAS EN EL PERIODO</div>
-  <table class="data-table">
+  <!-- Tabla de Devengados y Deducciones -->
+  <table class="details-table">
     <thead>
       <tr>
-        <th class="dark-header">Fecha</th>
-        <th class="dark-header">Entrada</th>
-        <th class="dark-header">Salida</th>
-        <th class="dark-header">Total Horas</th>
-        <th class="dark-header text-right">Valor Turno</th>
+        <th style="width: 70%;">CONCEPTO</th>
+        <th class="text-right" style="width: 30%;">VALOR</th>
       </tr>
     </thead>
-    <tbody id="tabla_horas">
+    <tbody>
+      <!-- Devengados -->
+      <tr class="section-title">
+        <td colspan="2">DEVENGADOS (INGRESOS)</td>
+      </tr>
+      <tr>
+        <td>Salario Básico / Total Horas</td>
+        <td class="text-right"><<[Salario_Basico / Total_Horas]>></td>
+      </tr>
+      <tr>
+        <td>Auxilio de Transporte</td>
+        <td class="text-right"><<[Auxilio_Transporte]>></td>
+      </tr>
+      <tr>
+        <td>Horas Extras y Recargos</td>
+        <td class="text-right"><<[Horas_Extras_Recargos]>></td>
+      </tr>
+
+      <!-- Deducciones -->
+      <tr class="section-title">
+        <td colspan="2">DEDUCCIONES (DESCUENTOS)</td>
+      </tr>
+      <tr>
+        <td>Aporte Salud</td>
+        <td class="text-right">- <<[Deduccion_Salud]>></td>
+      </tr>
+      <tr>
+        <td>Aporte Pensión</td>
+        <td class="text-right">- <<[Deduccion_Pension]>></td>
+      </tr>
+      <tr>
+        <td>Otras Deducciones</td>
+        <td class="text-right">- <<[Otras_Deducciones]>></td>
+      </tr>
+
+      <!-- Total -->
+      <tr class="total-row">
+        <td>NETO A PAGAR</td>
+        <td class="text-right"><<[Neto_Pagar]>></td>
+      </tr>
     </tbody>
   </table>
 
-  <!-- FIRMA DIGITAL -->
-  <div class="signature-wrapper">
-    <span class="no-print" style="font-size: 10px; color: #666;">Firme aquí con el dedo o mouse:</span>
-    <canvas id="firma-pad" width="280" height="90"></canvas>
-    <div class="signature-line">
-      <strong>Firma del Empleado / Recibido a satisfacción</strong><br>
-      C.C. <span id="cedula_firma"></span>
-    </div>
-    <button type="button" class="btn-clear no-print" onclick="limpiarFirma()">Limpiar firma</button>
+  <!-- Firmas -->
+  <table class="signatures">
+    <tr>
+      <td>
+        <div class="sig-line">Firma del Empleador</div>
+      </td>
+      <td>
+        <div class="sig-line">Firma del Empleado<br><span style="font-weight: normal; font-size: 11px;">C.C. / ID: <<[ID_Empleado]>></span></div>
+      </td>
+    </tr>
+  </table>
+
+  <div class="footer">
+    Documento generado automáticamente desde el sistema de gestión.
   </div>
 </div>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const search = window.location.search;
-    const params = new URLSearchParams(search);
-
-    function limpiarNumero(valor) {
-      if (!valor) return 0;
-      let str = String(valor).trim();
-      if (str.includes(",") && str.includes(".")) {
-        str = str.replace(/,/g, "");
-      } else if ((str.match(/\./g) || []).length > 1) {
-        str = str.replace(/\./g, "");
-      } else if ((str.match(/,/g) || []).length > 1) {
-        str = str.replace(/,/g, "");
-      } else if (str.includes(",") && str.split(",").length === 3) {
-        str = str.replace(",", "");
-      }
-      const limpio = str.replace(/[^0-9.-]/g, "");
-      return parseFloat(limpio) || 0;
-    }
-
-    function formatoMoneda(valor) {
-      const num = limpiarNumero(valor);
-      return "$" + num.toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
-    }
-
-    let idNomina = params.get("id") || "";
-    if (!idNomina && search.startsWith("?")) {
-      const primerSegmento = search.substring(1).split("&")[0];
-      if (primerSegmento && !primerSegmento.includes("=")) {
-        idNomina = decodeURIComponent(primerSegmento);
-      }
-    }
-
-    const cedulaVal = params.get("cc") || "";
-    const fechaVal = params.get("fecha") || "";
-
-    const campos = {
-      id_nomina: idNomina,
-      fecha_emision: fechaVal,
-      fecha_emision_2: fechaVal,
-      nombre: params.get("nombre") || "",
-      cedula: cedulaVal,
-      cedula_firma: cedulaVal,
-      cargo: params.get("cargo") || "",
-      contrato: params.get("contrato") || "",
-      periodo: params.get("periodo") || "",
-      cuenta: params.get("cuenta") || "",
-      eps: params.get("eps") || ""
-    };
-
-    for (const [id, valor] of Object.entries(campos)) {
-      const el = document.getElementById(id);
-      if (el) el.textContent = valor;
-    }
-
-    const basico = limpiarNumero(params.get("basico"));
-    const extras = limpiarNumero(params.get("extras"));
-    const transporte = limpiarNumero(params.get("transporte"));
-
-    const salud = limpiarNumero(params.get("salud"));
-    const pension = limpiarNumero(params.get("pension"));
+</body>
+</html>
