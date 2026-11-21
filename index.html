@@ -139,7 +139,7 @@
   <table class="data-table">
     <tr>
       <td class="label-cell">Nombre:</td>
-      <td class="val-cell"><<[ID_Empleado].[Nombre]>></td>
+      <td class="val-cell"><<[ID_Empleado].[Nombre_Empleado]>></td>
       <td class="label-cell">C.C.:</td>
       <td class="val-cell"><<[ID_Empleado].[Cedula]>></td>
     </tr>
@@ -157,7 +157,7 @@
     </tr>
     <tr>
       <td class="label-cell">EPS y Fondo Pensión:</td>
-      <td colspan="3"><<[ID_Empleado].[EPS_Pension]>></td>
+      <td colspan="3"><<[ID_Empleado].[EPS y Fondo_Pension]>></td>
     </tr>
   </table>
 
@@ -172,7 +172,7 @@
     </tr>
     <tr>
       <td>Salario Básico / Horas Ordinarias</td>
-      <td class="text-right"><<[Salario_Basico / Total_Hr]>></td>
+      <td class="text-right"><<[Salario_Basico / Total_Horas]>></td>
       <td>Aporte Salud (4%)</td>
       <td class="text-right"><<[Deduccion_Salud]>></td>
     </tr>
@@ -190,7 +190,7 @@
     </tr>
     <tr class="total-row">
       <td>TOTAL DEVENGADO</td>
-      <td class="text-right"><<[Salario_Basico / Total_Hr] + [Horas_Extras_Recargos] + [Auxilio_Transporte]>></td>
+      <td class="text-right"><<[Salario_Basico / Total_Horas] + [Horas_Extras_Recargos] + [Auxilio_Transporte]>></td>
       <td>TOTAL DEDUCCIONES</td>
       <td class="text-right"><<[Deduccion_Salud] + [Deduccion_Pension] + [Otras_Deducciones]>></td>
     </tr>
@@ -214,14 +214,13 @@
       <th class="dark-header">Total Horas</th>
       <th class="dark-header text-right">Valor Turno</th>
     </tr>
-    <!-- Bucle Start para traer las filas relacionadas de Horas_Trabajadas -->
-    <<Start: SELECT(Horas_Trabajadas[ID_Hora], AND([ID_Empleado] = [_THISROW].[ID_Empleado], [Fecha] >= [_THISROW].[Periodo_Inicio], [Fecha] <= [_THISROW].[Periodo_Fin]))>>
+    <<Start: ORDERBY(SELECT(Horas_Trabajadas[ID_Registro], AND([ID_Empleado] = [_THISROW].[ID_Empleado], [Fecha] >= [_THISROW].[Periodo_Inicio], [Fecha] <= [_THISROW].[Periodo_Fin])), [Fecha], TRUE)>>
     <tr>
       <td class="text-center"><<TEXT([Fecha], "DD/MM/YYYY")>></td>
       <td class="text-center"><<[Hora_Entrada]>></td>
       <td class="text-center"><<[Hora_Salida]>></td>
       <td class="text-center"><<[Total_Horas]>></td>
-      <td class="text-right"><<[Valor_Turno]>></td>
+      <td class="text-right"><<[Total_Pagar]>></td>
     </tr>
     <<End>>
   </table>
