@@ -167,11 +167,10 @@
 <body>
 
 <div class="actions-bar">
-  <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+  <button class="btn-print" onclick="window.print()">Imprimir / Guardar PDF</button>
 </div>
 
 <div class="container">
-  <!-- Encabezado -->
   <div class="header">
     <div class="company-info">
       <h1>Energy Cotiza y Factura</h1>
@@ -183,7 +182,6 @@
     </div>
   </div>
 
-  <!-- Datos del Empleado -->
   <table class="info-table">
     <tr>
       <td><strong>Empleado:</strong> <span id="nombre">-</span></td>
@@ -202,7 +200,6 @@
     </tr>
   </table>
 
-  <!-- Liquidación Principal -->
   <table class="details-table">
     <thead>
       <tr>
@@ -250,7 +247,6 @@
     </tbody>
   </table>
 
-  <!-- Detalle de Horas Trabajadas -->
   <table class="sub-table" id="tabla-horas">
     <thead>
       <tr>
@@ -268,7 +264,6 @@
     </tbody>
   </table>
 
-  <!-- Firmas -->
   <table class="signatures">
     <tr>
       <td>
@@ -291,67 +286,82 @@
 </div>
 
 <script>
-  function formatCOP(valor) {
-    if (!valor) return "$0";
-    const num = parseFloat(String(valor).replace(/[^0-9.-]+/g, ""));
-    if (isNaN(num)) return "$0";
-    return "$" + num.toLocaleString("es-CO", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-  }
-
-  // Capturar parámetros de la URL o del hash si hubiera redirección
-  const rawSearch = window.location.search;
-  const params = new URLSearchParams(rawSearch);
-
-  // Extraer el ID_Nomina que viene justo después de "?" sin clave
-  let idNomina = "-";
-  if (rawSearch.length > 1) {
-    const partes = rawSearch.substring(1).split("&");
-    const primeraParte = partes[0];
-    if (primeraParte && primeraParte.indexOf("=") === -1) {
-      idNomina = decodeURIComponent(primeraParte.replace(/\+/g, " "));
+  document.addEventListener("DOMContentLoaded", function() {
+    function formatCOP(valor) {
+      if (valor === null || valor === undefined || valor === "") return "$0";
+      var limpio = String(valor).replace(/[^0-9.-]+/g, "");
+      var num = parseFloat(limpio);
+      if (isNaN(num)) return "$0";
+      return "$" + num.toLocaleString("es-CO", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
     }
-  }
 
-  // Llenar datos generales
-  document.getElementById("id_nomina").textContent = idNomina;
-  document.getElementById("fecha").textContent = params.get("fecha") || "-";
-  document.getElementById("nombre").textContent = params.get("nombre") || "-";
-  document.getElementById("cc").textContent = params.get("cc") || "-";
-  document.getElementById("cargo").textContent = params.get("cargo") || "-";
-  document.getElementById("contrato").textContent = params.get("contrato") || "-";
-  document.getElementById("periodo").textContent = params.get("periodo") || "-";
-  document.getElementById("cuenta").textContent = params.get("cuenta") || "-";
-  document.getElementById("eps").textContent = params.get("eps") || "-";
+    function setTexto(idElemento, texto) {
+      var el = document.getElementById(idElemento);
+      if (el) {
+        el.textContent = (texto && texto.trim() !== "") ? texto : "-";
+      }
+    }
 
-  // Llenar firma
-  document.getElementById("firma_nombre").textContent = params.get("nombre") || "-";
-  document.getElementById("firma_cc").textContent = params.get("cc") || "-";
+    var rawSearch = window.location.search;
+    var params = new URLSearchParams(rawSearch);
 
-  // Llenar valores numéricos
-  document.getElementById("basico").textContent = formatCOP(params.get("basico"));
-  document.getElementById("extras").textContent = formatCOP(params.get("extras"));
-  document.getElementById("transporte").textContent = formatCOP(params.get("transporte"));
-  document.getElementById("salud").textContent = "- " + formatCOP(params.get("salud"));
-  document.getElementById("pension").textContent = "- " + formatCOP(params.get("pension"));
-  document.getElementById("otras").textContent = "- " + formatCOP(params.get("otras"));
-  document.getElementById("neto").textContent = formatCOP(params.get("neto"));
+    // Extraer el primer parámetro sin clave después del "?" (ID_Nomina)
+    var idNomina = "-";
+    if (rawSearch.length > 1) {
+      var sinSigno = rawSearch.substring(1);
+      var primeraParte = sinSigno.split("&").shift();
+      if (primeraParte && primeraParte.indexOf("=") === -1) {
+        try {
+          idNomina = decodeURIComponent(primeraParte.replace(/\+/g, " "));
+        } catch (e) {
+          idNomina = primeraParte;
+        }
+      }
+    }
 
-  // Llenar tabla de horas trabajadas
-  const hf = params.get("hf");
-  const he = params.get("he");
-  const hs = params.get("hs");
-  const ht = params.get("ht");
-  const hv = params.get("hv");
+    setTexto("id_nomina", idNomina);
+    setTexto("fecha", params.get("fecha"));
+    setTexto("nombre", params.get("nombre"));
+    setTexto("cc", params.get("cc"));
+    setTexto("cargo", params.get("cargo"));
+    setTexto("contrato", params.get("contrato"));
+    setTexto("periodo", params.get("periodo"));
+    setTexto("cuenta", params.get("cuenta"));
+    setTexto("eps", params.get("eps"));
 
-  const tbody = document.getElementById("horas-body");
+    setTexto("firma_nombre", params.get("nombre"));
+    setTexto("firma_cc", params.get("cc"));
 
-  if (hf && hf.trim() !== "") {
-    const fechas = hf.split(";;");
-    const entradas = he ? he.split(";;") : [];
-    const salidas = hs ? hs.split(";;") : [];
-    const horas = ht ? ht.split(";;") : [];
-    const valores = hv ? hv.split(";;") : [];
+    setTexto("basico", formatCOP(params.get("basico")));
+    setTexto("extras", formatCOP(params.get("extras")));
+    setTexto("transporte", formatCOP(params.get("transporte")));
+    setTexto("salud", "- " + formatCOP(params.get("salud")));
+    setTexto("pension", "- " + formatCOP(params.get("pension")));
+    setTexto("otras", "- " + formatCOP(params.get("otras")));
+    setTexto("neto", formatCOP(params.get("neto")));
 
-    for (let i = 0; i < fechas.length; i++) {
-      const tr = document.createElement("tr");
-      tr.innerHTML =
+    // Procesar tabla de horas trabajadas
+    var hf = params.get("hf");
+    var tablaHoras = document.getElementById("tabla-horas");
+    var tbody = document.getElementById("horas-body");
+
+    if (hf && hf.trim() !== "") {
+      var fechas = hf.split(";;");
+      var entradas = (params.get("he") || "").split(";;");
+      var salidas = (params.get("hs") || "").split(";;");
+      var horas = (params.get("ht") || "").split(";;");
+      var valores = (params.get("hv") || "").split(";;");
+
+      fechas.forEach(function(fechaItem, idx) {
+        var tr = document.createElement("tr");
+
+        var tdFecha = document.createElement("td");
+        tdFecha.textContent = fechaItem || "-";
+
+        var tdEntrada = document.createElement("td");
+        tdEntrada.className = "text-center";
+        tdEntrada.textContent = entradas.at(idx) || "-";
+
+        var tdSalida = document.createElement("td");
+        tdSalida.className = "text-center";
+        tdSalida.textContent = salidas.at(idx) || "-";
