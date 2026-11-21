@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comprobante de Pago de Nómina</title>
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+  }
+  .page {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 25px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  .header-table {
+    width: 100%;
+    border-bottom: 2px solid #d9531e;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+  }
+  .title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #222;
+    margin: 0;
+  }
+  .subtitle {
+    font-size: 12px;
+    font-weight: bold;
+    color: #d9531e;
+    margin: 3px 0;
+  }
+  .section-title {
+    color: #d9531e;
+    font-weight: bold;
+    font-size: 11px;
+    margin-top: 14px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+  }
+  table.data-table td, table.data-table th {
+    border: 1px solid #ccc;
+    padding: 6px 8px;
+  }
+  .label-cell {
+    background-color: #f9f5f2;
+    font-weight: bold;
+    width: 22%;
+  }
+  .val-cell {
+    width: 28%;
+  }
+  .orange-header {
+    background-color: #d9531e;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: left;
+  }
+  .text-right {
+    text-align: right;
+  }
+  .text-center {
+    text-align: center;
+  }
+  .total-row {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  .neto-box {
+    width: 100%;
+    border: 1px solid #d9531e;
+    background-color: #fff6f2;
+    margin: 12px 0;
+    border-collapse: collapse;
+  }
+  .neto-box td {
+    padding: 9px 10px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #d9531e;
+  }
+  .dark-header {
+    background-color: #4a4a4a;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+  }
+  .signature-box {
+    margin-top: 50px;
+    width: 260px;
+    border-top: 1px solid #333;
+    padding-top: 5px;
+    font-size: 11px;
+  }
+  .no-print {
+    text-align: right;
+    margin-bottom: 15px;
+  }
+  .btn-print {
+    background-color: #d9531e;
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  @media print {
+    body { background: #fff; padding: 0; }
+    .page { box-shadow: none; padding: 0; max-width: 100%; }
+    .no-print { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="no-print">
+    <button class="btn-print" onclick="window.print()">Imprimir / Guardar PDF</button>
+  </div>
+
+  <!-- ENCABEZADO -->
+  <table class="header-table">
+    <tr>
+      <td style="width: 18%;">
+        <!-- Cambia logo.png por el nombre de tu imagen subida en el mismo repositorio -->
+        <img src="logo.png" alt="Logo" style="max-height: 60px;" onerror="this.style.display='none'">
+      </td>
+      <td style="width: 57%;">
+        <p class="title">COMPROBANTE DE PAGO<br>DE NÓMINA</p>
+        <p class="subtitle">ENERGY SOLUCIONES ELÉCTRICAS Y REFRIGERACIÓN</p>
+        <span>Tierralta, Córdoba</span>
+      </td>
+      <td style="width: 25%; text-align: right; vertical-align: top;">
+        <strong>N° <span id="id_nomina"></span></strong><br>
+        <span>Fecha: <span id="fecha_emision"></span></span>
+      </td>
+    </tr>
+  </table>
+
+  <!-- 1. DATOS DEL EMPLEADOR -->
+  <div class="section-title">1. DATOS DEL EMPLEADOR</div>
+  <table class="data-table">
+    <tr>
+      <td class="label-cell">Empresa / Razón Social:</td>
+      <td class="val-cell">ENERGY SOLUCIONES ELÉCTRICAS Y REFRIGERACIÓN</td>
+      <td class="label-cell">NIT:</td>
+      <td class="val-cell">1073977725-0</td>
+    </tr>
+    <tr>
+      <td class="label-cell">Ciudad:</td>
+      <td class="val-cell">Tierralta, Córdoba</td>
+      <td class="label-cell">Fecha de Emisión:</td>
+      <td class="val-cell" id="fecha_emision_2"></td>
+    </tr>
+  </table>
+
+  <!-- 2. DATOS DEL TRABAJADOR -->
+  <div class="section-title">2. DATOS DEL TRABAJADOR Y PERIODO LIQUIDADO</div>
+  <table class="data-table">
+    <tr>
+      <td class="label-cell">Nombre:</td>
+      <td class="val-cell" id="nombre"></td>
+      <td class="label-cell">C.C.:</td>
+      <td class="val-cell" id="cedula"></td>
+    </tr>
+    <tr>
+      <td class="label-cell">Cargo:</td>
+      <td class="val-cell" id="cargo"></td>
+      <td class="label-cell">Tipo de Contrato:</td>
+      <td class="val-cell" id="contrato"></td>
+    </tr>
+    <tr>
+      <td class="label-cell">Periodo Liquidado:</td>
+      <td class="val-cell" id="periodo"></td>
+      <td class="label-cell">Cuenta Bancaria:</td>
+      <td class="val-cell" id="cuenta"></td>
+    </tr>
+    <tr>
+      <td class="label-cell">EPS y Fondo Pensión:</td>
+      <td colspan="3" id="eps"></td>
+    </tr>
+  </table>
+
+  <!-- 3. RESUMEN DE LIQUIDACIÓN -->
+  <div class="section-title">3. RESUMEN DE LIQUIDACIÓN</div>
+  <table class="data-table">
+    <tr>
+      <th class="orange-header" style="width: 32%;">CONCEPTOS DEVENGADOS (Ingresos)</th>
+      <th class="orange-header text-right" style="width: 18%;">VALOR</th>
+      <th class="orange-header" style="width: 32%;">DEDUCCIONES (Descuentos)</th>
+      <th class="orange-header text-right" style="width: 18%;">VALOR</th>
+    </tr>
+    <tr>
+      <td>Salario Básico / Horas Ordinarias</td>
+      <td class="text-right" id="basico">$0.00</td>
+      <td>Aporte Salud (4%)</td>
+      <td class="text-right" id="salud">$0.00</td>
+    </tr>
+    <tr>
+      <td>Horas Extras y Recargos</td>
+      <td class="text-right" id="extras">$0.00</td>
+      <td>Aporte Pensión (4%)</td>
+      <td class="text-right" id="pension">$0.00</td>
+    </tr>
+    <tr>
+      <td>Auxilio de Transporte</td>
+      <td class="text-right" id="transporte">$0.00</td>
+      <td>Otras Deducciones</td>
+      <td class="text-right" id="otras_ded">$0.00</td>
+    </tr>
+    <tr class="total-row">
+      <td>TOTAL DEVENGADO</td>
+      <td class="text-right" id="total_devengado">$0.00</td>
+      <td>TOTAL DEDUCCIONES</td>
+      <td class="text-right" id="total_deducciones">$0.00</td>
+    </tr>
+  </table>
+
+  <!-- NETO A PAGAR -->
+  <table class="neto-box">
+    <tr>
+      <td>NETO A PAGAR AL TRABAJADOR:</td>
+      <td class="text-right" id="neto">$0.00</td>
+    </tr>
+  </table>
+
+  <!-- 4. DETALLE DE HORAS TRABAJADAS -->
+  <div class="section-title">4. DETALLE DE HORAS TRABAJADAS EN EL PERIODO</div>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th class="dark-header">Fecha</th>
+        <th class="dark-header">Entrada</th>
+        <th class="dark-header">Salida</th>
+        <th class="dark-header">Total Horas</th>
+        <th class="dark-header text-right">Valor Turno</th>
+      </tr>
+    </thead>
+    <tbody id="tabla_horas">
+      <!-- Se llena automáticamente desde la URL -->
+    </tbody>
+  </table>
+
+  <!-- FIRMA -->
+  <div class="signature-box">
+    <strong>Firma del Empleado / Recibido a satisfacción</strong><br>
+    C.C. <span id="cedula_firma"></span>
+  </div>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+
+  function formatoMoneda(valor) {
+    const num = parseFloat(valor) || 0;
+    return "$" + num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  document.getElementById("id_nomina").textContent = params.get("id") || "";
+  document.getElementById("fecha_emision").textContent = params.get("fecha") || "";
+  document.getElementById("fecha_emision_2").textContent = params.get("fecha") || "";
+  document.getElementById("nombre").textContent = params.get("nombre") || "";
+  document.getElementById("cedula").textContent = params.get("cc") || "";
+  document.getElementById("cedula_firma").textContent = params.get("cc") || "";
+  document.getElementById("cargo").textContent = params.get("cargo") || "";
+  document.getElementById("contrato").textContent = params.get("contrato") || "";
+  document.getElementById("periodo").textContent = params.get("periodo") || "";
+  document.getElementById("cuenta").textContent = params.get("cuenta") || "";
+  document.getElementById("eps").textContent = params.get("eps") || "";
+
+  const basico = parseFloat(params.get("basico")) || 0;
+  const extras = parseFloat(params.get("extras")) || 0;
+  const transporte = parseFloat(params.get("transporte")) || 0;
+  const salud = parseFloat(params.get("salud")) || 0;
+  const pension = parseFloat(params.get("pension")) || 0;
+  const otrasDed = parseFloat(params.get("otras")) || 0;
+  const neto = parseFloat(params.get("neto")) || 0;
+
+  document.getElementById("basico").textContent = formatoMoneda(basico);
+  document.getElementById("extras").textContent = formatoMoneda(extras);
+  document.getElementById("transporte").textContent = formatoMoneda(transporte);
+  document.getElementById("total_devengado").textContent = formatoMoneda(basico + extras + transporte);
+
+  document.getElementById("salud").textContent = formatoMoneda(salud);
+  document.getElementById("pension").textContent = formatoMoneda(pension);
+  document.getElementById("otras_ded").textContent = formatoMoneda(otrasDed);
+  document.getElementById("total_deducciones").textContent = formatoMoneda(salud + pension + otrasDed);
+  document.getElementById("neto").textContent = formatoMoneda(neto);
+
+  // Construir filas de horas trabajadas (formato: fecha|entrada|salida|horas|valor;;fecha|entrada...)
+  const horasRaw = params.get("horas") || "";
+  const tbody = document.getElementById("tabla_horas");
+  if (horasRaw) {
+    const filas = horasRaw.split(";;");
+    filas.forEach(fila => {
+      const cols = fila.split("|");
+      if (cols.length >= 5) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="text-center">${cols[0]}</td>
+          <td class="text-center">${cols[1]}</td>
+          <td class="text-center">${cols[2]}</td>
+          <td class="text-center">${cols[3]}</td>
