@@ -98,33 +98,12 @@
     font-weight: bold;
     text-align: center;
   }
-  .signature-wrapper {
-    margin-top: 25px;
-    width: 280px;
-  }
-  #firma-pad {
-    border: 1px dashed #bbb;
-    background-color: #fafafa;
-    border-radius: 4px;
-    touch-action: none;
-    cursor: crosshair;
-    display: block;
-  }
-  .signature-line {
+  .signature-box {
+    margin-top: 50px;
+    width: 260px;
     border-top: 1px solid #333;
     padding-top: 5px;
     font-size: 11px;
-    margin-top: 2px;
-  }
-  .btn-clear {
-    background-color: #666;
-    color: #fff;
-    border: none;
-    padding: 4px 10px;
-    font-size: 11px;
-    border-radius: 3px;
-    cursor: pointer;
-    margin-top: 5px;
   }
   .no-print {
     text-align: right;
@@ -143,8 +122,7 @@
   @media print {
     body { background: #fff; padding: 0; }
     .page { box-shadow: none; padding: 0; max-width: 100%; }
-    .no-print { display: none !important; }
-    #firma-pad { border: none; background: transparent; }
+    .no-print { display: none; }
   }
 </style>
 </head>
@@ -276,15 +254,10 @@
     </tbody>
   </table>
 
-  <!-- FIRMA DIGITAL -->
-  <div class="signature-wrapper">
-    <span class="no-print" style="font-size: 10px; color: #666;">Firme aquí con el dedo o mouse:</span>
-    <canvas id="firma-pad" width="280" height="90"></canvas>
-    <div class="signature-line">
-      <strong>Firma del Empleado / Recibido a satisfacción</strong><br>
-      C.C. <span id="cedula_firma"></span>
-    </div>
-    <button type="button" class="btn-clear no-print" onclick="limpiarFirma()">Limpiar firma</button>
+  <!-- FIRMA -->
+  <div class="signature-box">
+    <strong>Firma del Empleado / Recibido a satisfacción</strong><br>
+    C.C. <span id="cedula_firma"></span>
   </div>
 </div>
 
@@ -330,3 +303,19 @@
   document.getElementById("salud").textContent = formatoMoneda(salud);
   document.getElementById("pension").textContent = formatoMoneda(pension);
   document.getElementById("otras_ded").textContent = formatoMoneda(otrasDed);
+  document.getElementById("total_deducciones").textContent = formatoMoneda(salud + pension + otrasDed);
+  document.getElementById("neto").textContent = formatoMoneda(neto);
+
+  const fList = (params.get("hf") || "").split(";;").filter(Boolean);
+  const eList = (params.get("he") || "").split(";;");
+  const sList = (params.get("hs") || "").split(";;");
+  const tList = (params.get("ht") || "").split(";;");
+  const vList = (params.get("hv") || "").split(";;");
+
+  const tbody = document.getElementById("tabla_horas");
+  for (let i = 0; i < fList.length; i++) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="text-center">${fList[i] || ""}</td>
+      <td class="text-center">${eList[i] || ""}</td>
+      <td class="text-center">${sList[i] || ""}</td>
