@@ -317,7 +317,6 @@
       });
     }
 
-    // 1. Obtener N° de Nómina (?537602-N-001&... o ?id=537602-N-001)
     let idNomina = params.get("id") || "";
     if (!idNomina && search.startsWith("?")) {
       const primerSegmento = search.substring(1).split("&")[0];
@@ -326,7 +325,6 @@
       }
     }
 
-    // 2. Rellenar datos generales y del trabajador
     const cedulaVal = params.get("cc") || "";
     const fechaVal = params.get("fecha") || "";
 
@@ -349,6 +347,9 @@
       if (el) el.textContent = valor;
     }
 
-    // 3. Calcular y rellenar resumen de liquidación
     const basico = limpiarNumero(params.get("basico"));
     const extras = limpiarNumero(params.get("extras"));
+    const transporte = limpiarNumero(params.get("transporte"));
+
+    const salud = limpiarNumero(params.get("salud"));
+    const pension = limpiarNumero(params.get("pension"));
