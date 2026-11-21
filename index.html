@@ -353,7 +353,7 @@
     </tbody>
   </table>
 
-  <div class="notes-box" id="caja-observaciones">
+  <div class="notes-box">
     <strong>Observaciones / Notas de pago:</strong>
     <span id="observaciones">Sin observaciones adicionales.</span>
   </div>
@@ -391,7 +391,7 @@
 </div>
 
 <script>
-  (function() {
-    function formatCOP(valor) {
-      if (valor === null || valor === undefined || valor === "") return "$0";
-      var texto = String(valor).trim();
+  function formatCOP(valor) {
+    if (valor === null || valor === undefined || valor === "") return "$0";
+    var texto = String(valor).trim();
+    texto = texto.replace(/\.00$/, "").replace(/\$/g, "").replace(/,/g, "").trim();
