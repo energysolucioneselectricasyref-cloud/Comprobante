@@ -48,11 +48,23 @@
       margin-bottom: 20px;
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
+      gap: 15px;
+    }
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .company-logo {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      border-radius: 6px;
     }
     .company-info h1 {
-      margin: 0 0 5px 0;
-      font-size: 19px;
+      margin: 0 0 4px 0;
+      font-size: 18px;
       color: #e65100;
     }
     .company-sub {
@@ -62,6 +74,7 @@
     }
     .doc-info {
       text-align: right;
+      white-space: nowrap;
     }
     .doc-info h2 {
       margin: 0 0 5px 0;
@@ -132,13 +145,39 @@
     }
     .signatures {
       width: 100%;
-      margin-top: 60px;
+      margin-top: 30px;
       border-collapse: collapse;
     }
     .signatures td {
       width: 50%;
       text-align: center;
-      padding: 0 25px;
+      vertical-align: bottom;
+      padding: 0 20px;
+    }
+    .sig-pad-wrapper {
+      margin-bottom: 4px;
+    }
+    .sig-canvas {
+      border: 1px dashed #bbbbbb;
+      background-color: #fafafa;
+      border-radius: 4px;
+      touch-action: none;
+      cursor: crosshair;
+      width: 100%;
+      max-width: 260px;
+      height: 85px;
+      display: block;
+      margin: 0 auto;
+    }
+    .btn-clear-sig {
+      margin-top: 4px;
+      background-color: #eeeeee;
+      color: #444444;
+      border: 1px solid #cccccc;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 3px;
+      cursor: pointer;
     }
     .sig-line {
       border-top: 1px solid #333333;
@@ -157,8 +196,13 @@
         background-color: #ffffff;
         padding: 0;
       }
-      .actions-bar {
-        display: none;
+      .actions-bar,
+      .btn-clear-sig {
+        display: none !important;
+      }
+      .sig-canvas {
+        border: none;
+        background-color: transparent;
       }
       .container {
         border: none;
@@ -177,11 +221,15 @@
 
 <div class="container">
   <div class="header">
-    <div class="company-info">
-      <h1>ENERGY SOLUCIONES ELÉCTRICAS Y REFRIGERACIÓN</h1>
-      <div class="company-sub">
-        Comprobante de Pago de Nómina<br>
-        Tierralta, Córdoba | Tel: 3242432439
+    <div class="brand-block">
+      <img src="Logo.jpg" alt="Logo Energy" class="company-logo" onerror="this.style.display='none'">
+      <div class="company-info">
+        <h1>ENERGY SOLUCIONES ELÉCTRICAS Y REFRIGERACIÓN</h1>
+        <div class="company-sub">
+          Comprobante de Pago de Nómina<br>
+          Carrera 47 #13-48 E2 Barrio San José — Tierralta, Córdoba<br>
+          Tel: 3242432439
+        </div>
       </div>
     </div>
     <div class="doc-info">
@@ -278,6 +326,10 @@
         <div class="sig-line">Firma del Empleador</div>
       </td>
       <td>
+        <div class="sig-pad-wrapper">
+          <canvas id="canvas-firma" class="sig-canvas" width="260" height="85"></canvas>
+          <button type="button" class="btn-clear-sig" id="btn-limpiar-firma">Borrar firma</button>
+        </div>
         <div class="sig-line">
           Firma del Empleado / Recibido a satisfacción<br>
           <span style="font-weight: normal; font-size: 11px;">
@@ -311,7 +363,6 @@
       }
     }
 
-    // Buscar parámetros tanto después de "?" como después de "#"
     var fullUrl = window.location.href;
     var queryString = "";
     if (fullUrl.indexOf("?") !== -1) {
@@ -320,92 +371,17 @@
       queryString = fullUrl.substring(fullUrl.indexOf("#") + 1);
     }
 
-    // Si no llegaron parámetros, mostrar aviso visible para diagnóstico
-    if (!queryString) {
-      var aviso = document.createElement("div");
-      aviso.style.cssText = "background:#ffebee;color:#b71c1c;padding:12px;margin:10px auto;max-width:800px;border:1px solid #ef9a9a;font-family:sans-serif;font-size:12px;word-break:break-all;";
-      aviso.innerHTML = "<strong>Aviso:</strong> Esta pestaña se abrió sin datos en la URL.<br><strong>URL recibida:</strong> " + fullUrl;
-      document.body.insertBefore(aviso, document.body.firstChild);
-      return;
-    }
-
     var params = new URLSearchParams(queryString);
 
     var idNomina = "-";
-    var ampIndex = queryString.indexOf("&");
-    var firstSegment = ampIndex !== -1 ? queryString.substring(0, ampIndex) : queryString;
-    if (firstSegment && firstSegment.indexOf("=") === -1) {
-      try {
-        idNomina = decodeURIComponent(firstSegment.replace(/\+/g, " "));
-      } catch (e) {
-        idNomina = firstSegment;
+    if (queryString.length > 0) {
+      var ampIndex = queryString.indexOf("&");
+      var firstSegment = ampIndex !== -1 ? queryString.substring(0, ampIndex) : queryString;
+      if (firstSegment && firstSegment.indexOf("=") === -1) {
+        try {
+          idNomina = decodeURIComponent(firstSegment.replace(/\+/g, " "));
+        } catch (e) {
+          idNomina = firstSegment;
+        }
       }
     }
-
-    setTexto("id_nomina", idNomina);
-    setTexto("fecha", params.get("fecha"));
-    setTexto("nombre", params.get("nombre"));
-    setTexto("cc", params.get("cc"));
-    setTexto("cargo", params.get("cargo"));
-    setTexto("contrato", params.get("contrato"));
-    setTexto("periodo", params.get("periodo"));
-    setTexto("cuenta", params.get("cuenta"));
-    setTexto("eps", params.get("eps"));
-
-    setTexto("firma_nombre", params.get("nombre"));
-    setTexto("firma_cc", params.get("cc"));
-
-    setTexto("basico", formatCOP(params.get("basico")));
-    setTexto("extras", formatCOP(params.get("extras")));
-    setTexto("transporte", formatCOP(params.get("transporte")));
-    setTexto("salud", "- " + formatCOP(params.get("salud")));
-    setTexto("pension", "- " + formatCOP(params.get("pension")));
-    setTexto("otras", "- " + formatCOP(params.get("otras")));
-    setTexto("neto", formatCOP(params.get("neto")));
-
-    var hf = params.get("hf");
-    var tablaHoras = document.getElementById("tabla-horas");
-    var tbody = document.getElementById("horas-body");
-
-    if (hf && hf.trim() !== "") {
-      var fechas = hf.split(";;");
-      var entradas = (params.get("he") || "").split(";;");
-      var salidas = (params.get("hs") || "").split(";;");
-      var horas = (params.get("ht") || "").split(";;");
-      var valores = (params.get("hv") || "").split(";;");
-
-      fechas.forEach(function(fechaItem, idx) {
-        var tr = document.createElement("tr");
-
-        var tdFecha = document.createElement("td");
-        tdFecha.textContent = fechaItem || "-";
-
-        var tdEntrada = document.createElement("td");
-        tdEntrada.className = "text-center";
-        tdEntrada.textContent = entradas.at(idx) || "-";
-
-        var tdSalida = document.createElement("td");
-        tdSalida.className = "text-center";
-        tdSalida.textContent = salidas.at(idx) || "-";
-
-        var tdHoras = document.createElement("td");
-        tdHoras.className = "text-right";
-        tdHoras.textContent = horas.at(idx) || "0";
-
-        var tdValor = document.createElement("td");
-        tdValor.className = "text-right";
-        tdValor.textContent = formatCOP(valores.at(idx));
-
-        tr.appendChild(tdFecha);
-        tr.appendChild(tdEntrada);
-        tr.appendChild(tdSalida);
-        tr.appendChild(tdHoras);
-        tr.appendChild(tdValor);
-
-        tbody.appendChild(tr);
-      });
-    } else if (tablaHoras) {
-      tablaHoras.style.display = "none";
-    }
-  })();
-</script>
