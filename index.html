@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Comprobante de Nómina - Energy Cotiza y Factura</title>
+  <title>Comprobante de Nómina - Energy Soluciones Eléctricas y Refrigeración</title>
   <style>
     * {
       box-sizing: border-box;
@@ -22,7 +22,7 @@
       text-align: right;
     }
     .btn-print {
-      background-color: #0056b3;
+      background-color: #e65100;
       color: #ffffff;
       border: none;
       padding: 10px 20px;
@@ -32,7 +32,7 @@
       cursor: pointer;
     }
     .btn-print:hover {
-      background-color: #004085;
+      background-color: #bf360c;
     }
     .container {
       max-width: 800px;
@@ -43,7 +43,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
     .header {
-      border-bottom: 2px solid #0056b3;
+      border-bottom: 2px solid #e65100;
       padding-bottom: 15px;
       margin-bottom: 20px;
       display: flex;
@@ -52,15 +52,20 @@
     }
     .company-info h1 {
       margin: 0 0 5px 0;
-      font-size: 21px;
-      color: #0056b3;
+      font-size: 19px;
+      color: #e65100;
+    }
+    .company-sub {
+      font-size: 12px;
+      color: #555555;
+      line-height: 1.4;
     }
     .doc-info {
       text-align: right;
     }
     .doc-info h2 {
       margin: 0 0 5px 0;
-      font-size: 16px;
+      font-size: 15px;
       color: #222222;
     }
     .info-table {
@@ -80,7 +85,7 @@
       margin-bottom: 22px;
     }
     .details-table th {
-      background-color: #0056b3;
+      background-color: #e65100;
       color: #ffffff;
       text-align: left;
       padding: 9px 12px;
@@ -97,7 +102,7 @@
       font-size: 12px;
     }
     .sub-table th {
-      background-color: #4a6b82;
+      background-color: #37474f;
       color: #ffffff;
       text-align: left;
       padding: 7px 10px;
@@ -113,16 +118,16 @@
       text-align: center;
     }
     .section-title {
-      background-color: #eef3f8;
+      background-color: #fff3e0;
       font-weight: bold;
-      color: #0056b3;
+      color: #e65100;
     }
     .total-row td {
       font-weight: bold;
       font-size: 15px;
-      background-color: #e6f0fa;
-      border-top: 2px solid #0056b3;
-      border-bottom: 2px solid #0056b3;
+      background-color: #ffe0b2;
+      border-top: 2px solid #e65100;
+      border-bottom: 2px solid #e65100;
       color: #000000;
     }
     .signatures {
@@ -173,8 +178,11 @@
 <div class="container">
   <div class="header">
     <div class="company-info">
-      <h1>Energy Cotiza y Factura</h1>
-      <div>Comprobante de Liquidación de Nómina</div>
+      <h1>ENERGY SOLUCIONES ELÉCTRICAS Y REFRIGERACIÓN</h1>
+      <div class="company-sub">
+        Comprobante de Pago de Nómina<br>
+        Tierralta, Córdoba | Tel: 3242432439
+      </div>
     </div>
     <div class="doc-info">
       <h2>COMPROBANTE N.º <span id="id_nomina">-</span></h2>
@@ -212,7 +220,7 @@
         <td colspan="2">DEVENGADOS (INGRESOS)</td>
       </tr>
       <tr>
-        <td>Salario Básico / Total Horas</td>
+        <td>Salario Básico / Horas Ordinarias</td>
         <td class="text-right" id="basico">$0</td>
       </tr>
       <tr>
@@ -228,11 +236,11 @@
         <td colspan="2">DEDUCCIONES (DESCUENTOS)</td>
       </tr>
       <tr>
-        <td>Aporte Salud</td>
+        <td>Aporte Salud (4%)</td>
         <td class="text-right" id="salud">- $0</td>
       </tr>
       <tr>
-        <td>Aporte Pensión</td>
+        <td>Aporte Pensión (4%)</td>
         <td class="text-right" id="pension">- $0</td>
       </tr>
       <tr>
@@ -241,7 +249,7 @@
       </tr>
 
       <tr class="total-row">
-        <td>NETO A PAGAR</td>
+        <td>NETO A PAGAR AL TRABAJADOR</td>
         <td class="text-right" id="neto">$0</td>
       </tr>
     </tbody>
@@ -250,14 +258,14 @@
   <table class="sub-table" id="tabla-horas">
     <thead>
       <tr>
-        <th colspan="5" style="background-color: #2c4759;">DETALLE DE HORAS TRABAJADAS EN EL PERIODO</th>
+        <th colspan="5">DETALLE DE HORAS TRABAJADAS EN EL PERIODO</th>
       </tr>
       <tr>
         <th>Fecha</th>
         <th class="text-center">Entrada</th>
         <th class="text-center">Salida</th>
         <th class="text-right">Horas</th>
-        <th class="text-right">Subtotal</th>
+        <th class="text-right">Valor Turno</th>
       </tr>
     </thead>
     <tbody id="horas-body">
@@ -271,7 +279,7 @@
       </td>
       <td>
         <div class="sig-line">
-          Firma del Empleado<br>
+          Firma del Empleado / Recibido a satisfacción<br>
           <span style="font-weight: normal; font-size: 11px;">
             <span id="firma_nombre">-</span> — C.C. <span id="firma_cc">-</span>
           </span>
@@ -281,16 +289,18 @@
   </table>
 
   <div class="footer">
-    Comprobante generado automáticamente desde Energy Cotiza y Factura.
+    Energy Soluciones Eléctricas y Refrigeración — Comprobante generado automáticamente.
   </div>
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
+  (function() {
     function formatCOP(valor) {
       if (valor === null || valor === undefined || valor === "") return "$0";
-      var limpio = String(valor).replace(/[^0-9.-]+/g, "");
-      var num = parseFloat(limpio);
+      var texto = String(valor).trim();
+      // Si viene como $40,000.00 de AppSheet, quitar .00 y comas
+      texto = texto.replace(/\.00$/, "").replace(/\$/g, "").replace(/,/g, "").trim();
+      var num = parseFloat(texto);
       if (isNaN(num)) return "$0";
       return "$" + num.toLocaleString("es-CO", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
     }
@@ -298,23 +308,25 @@
     function setTexto(idElemento, texto) {
       var el = document.getElementById(idElemento);
       if (el) {
-        el.textContent = (texto && texto.trim() !== "") ? texto : "-";
+        el.textContent = (texto && String(texto).trim() !== "") ? String(texto).trim() : "-";
       }
     }
 
-    var rawSearch = window.location.search;
-    var params = new URLSearchParams(rawSearch);
+    var fullUrl = window.location.href;
+    var queryIndex = fullUrl.indexOf("?");
+    var queryString = queryIndex !== -1 ? fullUrl.substring(queryIndex + 1) : "";
+    var params = new URLSearchParams(queryString);
 
-    // Extraer el primer parámetro sin clave después del "?" (ID_Nomina)
+    // Extraer ID_Nomina sin depender de corchetes
     var idNomina = "-";
-    if (rawSearch.length > 1) {
-      var sinSigno = rawSearch.substring(1);
-      var primeraParte = sinSigno.split("&").shift();
-      if (primeraParte && primeraParte.indexOf("=") === -1) {
+    if (queryString.length > 0) {
+      var ampIndex = queryString.indexOf("&");
+      var firstSegment = ampIndex !== -1 ? queryString.substring(0, ampIndex) : queryString;
+      if (firstSegment && firstSegment.indexOf("=") === -1) {
         try {
-          idNomina = decodeURIComponent(primeraParte.replace(/\+/g, " "));
+          idNomina = decodeURIComponent(firstSegment.replace(/\+/g, " "));
         } catch (e) {
-          idNomina = primeraParte;
+          idNomina = firstSegment;
         }
       }
     }
@@ -340,7 +352,7 @@
     setTexto("otras", "- " + formatCOP(params.get("otras")));
     setTexto("neto", formatCOP(params.get("neto")));
 
-    // Procesar tabla de horas trabajadas
+    // Detalle de horas trabajadas
     var hf = params.get("hf");
     var tablaHoras = document.getElementById("tabla-horas");
     var tbody = document.getElementById("horas-body");
@@ -351,17 +363,3 @@
       var salidas = (params.get("hs") || "").split(";;");
       var horas = (params.get("ht") || "").split(";;");
       var valores = (params.get("hv") || "").split(";;");
-
-      fechas.forEach(function(fechaItem, idx) {
-        var tr = document.createElement("tr");
-
-        var tdFecha = document.createElement("td");
-        tdFecha.textContent = fechaItem || "-";
-
-        var tdEntrada = document.createElement("td");
-        tdEntrada.className = "text-center";
-        tdEntrada.textContent = entradas.at(idx) || "-";
-
-        var tdSalida = document.createElement("td");
-        tdSalida.className = "text-center";
-        tdSalida.textContent = salidas.at(idx) || "-";
