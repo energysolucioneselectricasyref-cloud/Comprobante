@@ -289,50 +289,62 @@
 </div>
 
 <script>
-  const params = new URLSearchParams(window.location.search);
+  document.addEventListener("DOMContentLoaded", function () {
+    const params = new URLSearchParams(window.location.search);
 
-  function limpiarNumero(valor) {
-    if (!valor) return 0;
-    const limpio = String(valor).replace(/[^0-9.-]/g, "");
-    return parseFloat(limpio) || 0;
-  }
-
-  function formatoMoneda(valor) {
-    const num = limpiarNumero(valor);
-    return "$" + num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-
-  let idNomina = params.get("id") || "";
-  if (!idNomina) {
-    for (const [clave, valor] of params.entries()) {
-      if (valor === "" && clave) {
-        idNomina = clave;
-        break;
+    function limpiarNumero(valor) {
+      if (!valor) return 0;
+      let str = String(valor).trim();
+      // Si tiene formato colombiano (ej. 1.300.000 o 1.300.000,50)
+      if (str.includes(".") && str.includes(",")) {
+        str = str.replace(/\./g, "").replace(",", ".");
+      } else if ((str.match(/\./g) || []).length > 1) {
+        str = str.replace(/\./g, "");
+      } else if ((str.match(/,/g) || []).length > 1) {
+        str = str.replace(/,/g, "");
+      } else if (str.includes(".") && str.split(".")[1].length === 3) {
+        str = str.replace(".", "");
+      } else if (str.includes(",") && str.split(",")[1].length === 3) {
+        str = str.replace(",", "");
       }
+      const limpio = str.replace(/[^0-9.-]/g, "");
+      return parseFloat(limpio) || 0;
     }
-  }
 
-  document.getElementById("id_nomina").textContent = idNomina;
-  document.getElementById("fecha_emision").textContent = params.get("fecha") || "";
-  document.getElementById("fecha_emision_2").textContent = params.get("fecha") || "";
-  document.getElementById("nombre").textContent = params.get("nombre") || "";
-  document.getElementById("cedula").textContent = params.get("cc") || "";
-  document.getElementById("cedula_firma").textContent = params.get("cc") || "";
-  document.getElementById("cargo").textContent = params.get("cargo") || "";
-  document.getElementById("contrato").textContent = params.get("contrato") || "";
-  document.getElementById("periodo").textContent = params.get("periodo") || "";
-  document.getElementById("cuenta").textContent = params.get("cuenta") || "";
-  document.getElementById("eps").textContent = params.get("eps") || "";
+    function formatoMoneda(valor) {
+      const num = limpiarNumero(valor);
+      return "$" + num.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
 
-  const basico = limpiarNumero(params.get("basico"));
-  const extras = limpiarNumero(params.get("extras"));
-  const transporte = limpiarNumero(params.get("transporte"));
-  const salud = limpiarNumero(params.get("salud"));
-  const pension = limpiarNumero(params.get("pension"));
-  const otrasDed = limpiarNumero(params.get("otras"));
-  const neto = limpiarNumero(params.get("neto"));
+    // 1. Rellenar textos
+    const camposTexto = {
+      id_nomina: params.get("id") || "",
+      fecha_emision: params.get("fecha") || "",
+      fecha_emision_2: params.get("fecha") || "",
+      nombre: params.get("nombre") || "",
+      cedula: params.get("cedula") || "",
+      cedula_firma: params.get("cedula") || "",
+      cargo: params.get("cargo") || "",
+      contrato: params.get("contrato") || "",
+      periodo: params.get("periodo") || "",
+      cuenta: params.get("cuenta") || "",
+      eps: params.get("eps") || ""
+    };
 
-  document.getElementById("basico").textContent = formatoMoneda(basico);
-  document.getElementById("extras").textContent = formatoMoneda(extras);
-  document.getElementById("transporte").textContent = formatoMoneda(transporte);
-  document.getElementById("total_devengado").textContent = formatoMoneda(basico + extras + transporte);
+    for (const [id, valor] of Object.entries(camposTexto)) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = valor;
+    }
+
+    // 2. Calcular valores de nómina
+    const basico = limpiarNumero(params.get("basico"));
+    const extras = limpiarNumero(params.get("extras"));
+    const transporte = limpiarNumero(params.get("transporte"));
+
+    // Si no envían salud o pensión en la URL, calcula el 4% automático
+    const baseCotizacion = basico + extras;
+    const salud = params.has("salud")
+      ? limpiarNumero(params.get("salud"))
