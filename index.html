@@ -302,7 +302,17 @@
     return "$" + num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  document.getElementById("id_nomina").textContent = params.get("id") || "";
+  let idNomina = params.get("id") || "";
+  if (!idNomina) {
+    for (const [clave, valor] of params.entries()) {
+      if (valor === "" && clave) {
+        idNomina = clave;
+        break;
+      }
+    }
+  }
+
+  document.getElementById("id_nomina").textContent = idNomina;
   document.getElementById("fecha_emision").textContent = params.get("fecha") || "";
   document.getElementById("fecha_emision_2").textContent = params.get("fecha") || "";
   document.getElementById("nombre").textContent = params.get("nombre") || "";
@@ -326,7 +336,3 @@
   document.getElementById("extras").textContent = formatoMoneda(extras);
   document.getElementById("transporte").textContent = formatoMoneda(transporte);
   document.getElementById("total_devengado").textContent = formatoMoneda(basico + extras + transporte);
-
-  document.getElementById("salud").textContent = formatoMoneda(salud);
-  document.getElementById("pension").textContent = formatoMoneda(pension);
-  document.getElementById("otras_ded").textContent = formatoMoneda(otrasDed);
