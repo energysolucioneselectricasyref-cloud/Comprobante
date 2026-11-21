@@ -265,7 +265,6 @@
       </tr>
     </thead>
     <tbody id="horas-body">
-      <!-- Se llena dinámicamente con JS -->
     </tbody>
   </table>
 
@@ -292,27 +291,28 @@
 </div>
 
 <script>
-  // Función para formatear moneda en pesos colombianos
   function formatCOP(valor) {
-    const num = parseFloat(valor);
+    if (!valor) return "$0";
+    const num = parseFloat(String(valor).replace(/[^0-9.-]+/g, ""));
     if (isNaN(num)) return "$0";
     return "$" + num.toLocaleString("es-CO", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
   }
 
-  // Leer parámetros de la URL
+  // Capturar parámetros de la URL o del hash si hubiera redirección
   const rawSearch = window.location.search;
   const params = new URLSearchParams(rawSearch);
 
-  // Extraer el primer parámetro sin clave (ID_Nomina) que viene justo después del "?"
+  // Extraer el ID_Nomina que viene justo después de "?" sin clave
   let idNomina = "-";
   if (rawSearch.length > 1) {
-    const firstPart = rawSearch.substring(1).split("&")[0];
-    if (!firstPart.includes("=")) {
-      idNomina = decodeURIComponent(firstPart.replace(/\+/g, " "));
+    const partes = rawSearch.substring(1).split("&");
+    const primeraParte = partes[0];
+    if (primeraParte && primeraParte.indexOf("=") === -1) {
+      idNomina = decodeURIComponent(primeraParte.replace(/\+/g, " "));
     }
   }
 
-  // Asignar textos
+  // Llenar datos generales
   document.getElementById("id_nomina").textContent = idNomina;
   document.getElementById("fecha").textContent = params.get("fecha") || "-";
   document.getElementById("nombre").textContent = params.get("nombre") || "-";
@@ -323,11 +323,11 @@
   document.getElementById("cuenta").textContent = params.get("cuenta") || "-";
   document.getElementById("eps").textContent = params.get("eps") || "-";
 
-  // Asignar firma
+  // Llenar firma
   document.getElementById("firma_nombre").textContent = params.get("nombre") || "-";
   document.getElementById("firma_cc").textContent = params.get("cc") || "-";
 
-  // Asignar valores numéricos formateados
+  // Llenar valores numéricos
   document.getElementById("basico").textContent = formatCOP(params.get("basico"));
   document.getElementById("extras").textContent = formatCOP(params.get("extras"));
   document.getElementById("transporte").textContent = formatCOP(params.get("transporte"));
@@ -336,7 +336,7 @@
   document.getElementById("otras").textContent = "- " + formatCOP(params.get("otras"));
   document.getElementById("neto").textContent = formatCOP(params.get("neto"));
 
-  // Construir tabla de horas trabajadas separadas por ";;"
+  // Llenar tabla de horas trabajadas
   const hf = params.get("hf");
   const he = params.get("he");
   const hs = params.get("hs");
@@ -354,3 +354,4 @@
 
     for (let i = 0; i < fechas.length; i++) {
       const tr = document.createElement("tr");
+      tr.innerHTML =
